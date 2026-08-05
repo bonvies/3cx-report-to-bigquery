@@ -2,3 +2,11 @@ node_modules/
 dist/
 .env
 *.log
+logs/
+
+# Editor
+.DS_Store
+
+# Secrets
+*-key.json
+*service-account*.json

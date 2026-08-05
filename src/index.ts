@@ -1,6 +1,8 @@
 import { config } from './config.js';
 import { getQueueCallbacks } from './services/api/getQueueCallbacks.js';
-import { insertQueueCallbackRecords } from './services/bigquery.js';
+import { getQueueAnsweredCallsByWaitTime } from './services/api/getQueueAnsweredCallsByWaitTime.js';
+import { getStatisticSla } from './services/api/getStatisticSla.js';
+import { insertRecords } from './services/bigquery.js';
 import getSyncWindow from './util/getSyncWindow.js';
 
 async function main() {
@@ -19,7 +21,23 @@ async function main() {
         const records = await getQueueCallbacks(since.toISOString(), until.toISOString());
         console.log(`Fetched ${records.length} Queue Callback records`);
 
-        await insertQueueCallbackRecords(records);
+        await insertRecords(records);
+        console.log(`Inserted ${records.length} records into ${config.bigquery.dataset}.${config.bigquery.table}`);
+        break;
+      }
+      case 'queueAnsweredCallsByWaitTime': {
+        const records = await getQueueAnsweredCallsByWaitTime(since.toISOString(), until.toISOString());
+        console.log(`Fetched ${records.length} Queue Answered Calls By Wait Time records`);
+
+        await insertRecords(records);
+        console.log(`Inserted ${records.length} records into ${config.bigquery.dataset}.${config.bigquery.table}`);
+        break;
+      }
+      case 'statisticSla': {
+        const records = await getStatisticSla(since.toISOString(), until.toISOString());
+        console.log(`Fetched ${records.length} Statistic SLA records`);
+
+        await insertRecords(records);
         console.log(`Inserted ${records.length} records into ${config.bigquery.dataset}.${config.bigquery.table}`);
         break;
       }
