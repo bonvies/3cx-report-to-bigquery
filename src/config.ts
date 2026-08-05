@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { SYNC_WINDOW_UNITS, type SyncWindowUnit } from './util/getSyncWindow.js';
+import { SYNC_PRESETS, type SyncPreset } from './util/getSyncWindow.js';
 
 function required(name: string): string {
   const value = process.env[name];
@@ -7,12 +7,12 @@ function required(name: string): string {
   return value;
 }
 
-function syncWindowUnit(): SyncWindowUnit {
-  const value = process.env.SYNC_LOOKBACK_UNIT ?? 'day';
-  if (!SYNC_WINDOW_UNITS.includes(value as SyncWindowUnit)) {
-    throw new Error(`Invalid SYNC_LOOKBACK_UNIT: ${value} (expected one of ${SYNC_WINDOW_UNITS.join(', ')})`);
+function syncPreset(): SyncPreset {
+  const value = required('PERIOD_PRESET');
+  if (!SYNC_PRESETS.includes(value as SyncPreset)) {
+    throw new Error(`Invalid PERIOD_PRESET: ${value} (expected one of ${SYNC_PRESETS.join(', ')})`);
   }
-  return value as SyncWindowUnit;
+  return value as SyncPreset;
 }
 
 export const config = {
@@ -29,12 +29,12 @@ export const config = {
     table: required('REPORT_TYPE'),
   },
   sync: {
-    // 業務時區 — day/week/month/year 的乾淨邊界要以這個時區為準，預設 Asia/Taipei
+    // 業務時區 — 除 custom 外的 preset 都是以這個時區的乾淨邊界為準，預設 Asia/Taipei
     timeZone: process.env.SITE_TIMEZONE ?? 'Asia/Taipei',
-    lookbackUnit: syncWindowUnit(),
-    lookbackAmount: Number(process.env.SYNC_LOOKBACK_AMOUNT ?? 1),
-    // Explicit backfill range — when both are set, they override lookbackUnit/lookbackAmount.
-    customSince: process.env.SYNC_SINCE_3CX || undefined,
-    customUntil: process.env.SYNC_UNTIL_3CX || undefined,
+    // 比照 3CX 網頁報表的快速選項（today/yesterday/lastWeek...），必填、沒有預設值
+    preset: syncPreset(),
+    // preset 為 custom 時才會用到
+    customPeriodFrom: process.env.PERIOD_FROM || undefined,
+    customPeriodTo: process.env.PERIOD_TO || undefined,
   },
 };

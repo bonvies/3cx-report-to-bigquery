@@ -14,7 +14,7 @@ src/
       connectToken.ts          跟 3CX 要 OAuth token（cache + 自動 refresh），提供已掛 Authorization 的 axios instance
       getQueueCallbacks.ts     打 ReportQueueCallbacks/Pbx.GetQueueCallbacksData
   util/
-    getSyncWindow.ts           算 since/until 時間區間（相對區間或自訂 backfill 區間）
+    getSyncWindow.ts           算 periodFrom/periodTo 時間區間（PERIOD_PRESET 快速選項或自訂 backfill 區間）
     describeError.ts           把 axios 錯誤轉成好讀的字串
 ```
 
@@ -28,9 +28,8 @@ src/
 | `BASE_URL_3CX` | 3CX PBX 網址，例如 `https://yourpbx.3cx.tw` |
 | `CLIENT_ID_3CX` / `CLIENT_SECRET_3CX` | 3CX X-API 的 client credentials |
 | `BQ_PROJECT_ID` / `BQ_DATASET` | 要寫入的 BigQuery 專案／dataset |
-| `SYNC_LOOKBACK_UNIT` | 相對同步區間的單位：`minute` \| `hour` \| `day` \| `week` \| `month` \| `year`，預設 `day` |
-| `SYNC_LOOKBACK_AMOUNT` | 相對同步區間的數量，預設 `1`（配上預設單位，就是抓「過去一天」） |
-| `SYNC_SINCE_3CX` / `SYNC_UNTIL_3CX` | 自訂 backfill 區間（ISO 8601），兩個都填才會生效，會覆蓋掉上面兩個 lookback 設定 |
+| `PERIOD_PRESET` | 同步區間，比照 3CX 網頁報表的快速選項：`custom` \| `thisMinute` \| `thisHour` \| `today` \| `yesterday` \| `last7Days` \| `lastWeek` \| `last30Days` \| `thisMonth` \| `lastMonth` \| `thisYear` \| `lastYear`，**必填、沒有預設值** |
+| `PERIOD_FROM` / `PERIOD_TO` | 自訂 backfill 區間（ISO 8601），只有 `PERIOD_PRESET=custom` 時才會讀取，兩個都要填 |
 
 > BigQuery table 名稱不是獨立設定，直接沿用 `REPORT_TYPE` 的值（`config.ts` 裡 `bigquery.table = REPORT_TYPE`）。要跑哪個 report，就要先在 `BQ_DATASET` 裡手動建一張同名的 table，例如 `REPORT_TYPE=callLog` 就要有一張叫 `callLog` 的 table。
 >
@@ -68,13 +67,13 @@ gcloud run jobs create 3cx-sync \
 # 手動跑一次
 gcloud run jobs execute 3cx-sync --region <region>
 
-# 覆蓋參數：改抓過去一週
+# 覆蓋參數：改抓上個月
 gcloud run jobs execute 3cx-sync --region <region> \
-  --update-env-vars=SYNC_LOOKBACK_UNIT=week,SYNC_LOOKBACK_AMOUNT=1
+  --update-env-vars=PERIOD_PRESET=lastMonth
 
 # 覆蓋參數：backfill 指定區間
 gcloud run jobs execute 3cx-sync --region <region> \
-  --update-env-vars=SYNC_SINCE_3CX=2026-01-01T00:00:00Z,SYNC_UNTIL_3CX=2026-01-31T23:59:59Z
+  --update-env-vars=PERIOD_PRESET=custom,PERIOD_FROM=2026-01-01T00:00:00Z,PERIOD_TO=2026-01-31T23:59:59Z
 ```
 
 排程用 Cloud Scheduler 打 Cloud Run Jobs Admin API 觸發 execute，不是打程式自己的 HTTP endpoint（這個專案沒有、也不需要 HTTP server）。
