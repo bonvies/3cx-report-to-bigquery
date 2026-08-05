@@ -29,6 +29,8 @@ export const config = {
     table: required('REPORT_TYPE'),
   },
   sync: {
+    // 業務時區 — day/week/month/year 的乾淨邊界要以這個時區為準，預設 Asia/Taipei
+    timeZone: process.env.SITE_TIMEZONE ?? 'Asia/Taipei',
     lookbackUnit: syncWindowUnit(),
     lookbackAmount: Number(process.env.SYNC_LOOKBACK_AMOUNT ?? 1),
     // Explicit backfill range — when both are set, they override lookbackUnit/lookbackAmount.

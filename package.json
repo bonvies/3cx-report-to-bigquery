@@ -12,6 +12,8 @@
   "dependencies": {
     "@google-cloud/bigquery": "^7.9.0",
     "axios": "^1.7.7",
+    "date-fns": "^4.4.0",
+    "date-fns-tz": "^3.2.0",
     "dotenv": "^16.4.5"
   },
   "devDependencies": {

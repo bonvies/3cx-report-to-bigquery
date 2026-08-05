@@ -11,6 +11,7 @@ async function main() {
     const { since, until } = getSyncWindow({
       unit: config.sync.lookbackUnit,
       amount: config.sync.lookbackAmount,
+      timeZone: config.sync.timeZone,
       customSince: config.sync.customSince,
       customUntil: config.sync.customUntil,
     });
