@@ -24,14 +24,16 @@ src/
 
 | 變數 | 說明 |
 | --- | --- |
-| `REPORT_TYPE` | 要跑哪個 report，對應 `src/index.ts` 裡的 `switch`。目前支援 `queueCallbacks`。 |
+| `REPORT_TYPE` | 要跑哪個 report，對應 `src/index.ts` 裡的 `switch`，**必填、沒有預設值**。同時也直接當作要寫入的 BigQuery table 名稱（見下） |
 | `BASE_URL_3CX` | 3CX PBX 網址，例如 `https://yourpbx.3cx.tw` |
 | `CLIENT_ID_3CX` / `CLIENT_SECRET_3CX` | 3CX X-API 的 client credentials |
-| `BQ_PROJECT_ID` / `BQ_DATASET` / `BQ_TABLE` | 要寫入的 BigQuery 專案／dataset／table |
+| `BQ_PROJECT_ID` / `BQ_DATASET` | 要寫入的 BigQuery 專案／dataset |
 | `SYNC_LOOKBACK_UNIT` | 相對同步區間的單位：`minute` \| `hour` \| `day` \| `week` \| `month` \| `year`，預設 `day` |
 | `SYNC_LOOKBACK_AMOUNT` | 相對同步區間的數量，預設 `1`（配上預設單位，就是抓「過去一天」） |
 | `SYNC_SINCE_3CX` / `SYNC_UNTIL_3CX` | 自訂 backfill 區間（ISO 8601），兩個都填才會生效，會覆蓋掉上面兩個 lookback 設定 |
 
+> BigQuery table 名稱不是獨立設定，直接沿用 `REPORT_TYPE` 的值（`config.ts` 裡 `bigquery.table = REPORT_TYPE`）。要跑哪個 report，就要先在 `BQ_DATASET` 裡手動建一張同名的 table，例如 `REPORT_TYPE=callLog` 就要有一張叫 `callLog` 的 table。
+>
 > 目前 3CX API 呼叫的 `queueDnStr` 固定帶 `null`（抓全部 queue），endpoint 路徑也是寫死在 `getQueueCallbacks.ts` 裡，這兩個都不會變動，所以沒有做成環境變數。
 
 ## 本機開發
@@ -59,7 +61,7 @@ docker push <region>-docker.pkg.dev/<project>/<repo>/3cx-report-to-bigquery
 gcloud run jobs create 3cx-sync \
   --image <region>-docker.pkg.dev/<project>/<repo>/3cx-report-to-bigquery \
   --region <region> \
-  --set-env-vars=REPORT_TYPE=queueCallbacks,BASE_URL_3CX=...,CLIENT_ID_3CX=...,BQ_PROJECT_ID=...,BQ_DATASET=...,BQ_TABLE=... \
+  --set-env-vars=REPORT_TYPE=queueCallbacks,BASE_URL_3CX=...,CLIENT_ID_3CX=...,BQ_PROJECT_ID=...,BQ_DATASET=... \
   --set-secrets=CLIENT_SECRET_3CX=3cx-client-secret:latest \
   --service-account=<service-account>
 
@@ -89,4 +91,5 @@ gcloud run jobs execute 3cx-sync --region <region> \
 1. 在 `src/services/api/` 底下新增對應的 fetch function（參考 `getQueueCallbacks.ts`）。
 2. 在 `src/services/bigquery.ts` 或新的檔案裡加對應的 insert function。
 3. 在 `src/index.ts` 的 `switch (config.reportType)` 多加一個 `case`。
-4. 部署時用 `REPORT_TYPE=<新的值>` 觸發。
+4. 在 `BQ_DATASET` 裡手動建一張跟這個 `REPORT_TYPE` 值同名的 table。
+5. 部署時用 `REPORT_TYPE=<新的值>` 觸發，同時決定要跑哪個 report 和寫進哪張 table。

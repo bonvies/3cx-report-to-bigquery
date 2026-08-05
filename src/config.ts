@@ -16,8 +16,7 @@ function syncWindowUnit(): SyncWindowUnit {
 }
 
 export const config = {
-  // Selects which report to run — see the switch in index.ts for supported values.
-  reportType: process.env.REPORT_TYPE ?? 'queueCallbacks',
+  reportType: required('REPORT_TYPE'),
   threeCx: {
     baseUrl: required('BASE_URL_3CX'),
     clientId: required('CLIENT_ID_3CX'),
@@ -26,7 +25,8 @@ export const config = {
   bigquery: {
     projectId: required('BQ_PROJECT_ID'),
     dataset: required('BQ_DATASET'),
-    table: required('BQ_TABLE'),
+    // Table name matches REPORT_TYPE 1:1 — create a BigQuery table with that exact name.
+    table: required('REPORT_TYPE'),
   },
   sync: {
     lookbackUnit: syncWindowUnit(),
