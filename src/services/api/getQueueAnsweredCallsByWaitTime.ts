@@ -9,8 +9,8 @@ const endpoint = '/xapi/v1/ReportQueueAnsweredCallsByWaitTime/Pbx.GetQueueAnswer
 
 export async function getQueueAnsweredCallsByWaitTime(sinceIso: string, untilIso: string): Promise<QueueAnsweredCallsByWaitTimeRecord[]> {
   try {
-    // queueDnStr='' and answerInterval='' mean "all queues / default bucketing" — same
-    // quoted-empty-string quirk as GetQueueCallbacksData; both fields are required by 3CX.
+    // queueDnStr='' 和 answerInterval='' 代表「所有 queue / 預設分桶」——跟
+    // GetQueueCallbacksData 一樣要帶引號空字串的怪癖，這兩個欄位 3CX 都是必填。
     const path = `${endpoint}(queueDnStr='',startDt=${sinceIso},endDt=${untilIso},answerInterval='')`;
     const response = await axios3CXInstance.get<{ value: QueueAnsweredCallsByWaitTimeRecord[] }>(path);
 

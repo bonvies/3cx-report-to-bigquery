@@ -13,9 +13,8 @@ export async function insertRecords(
 ): Promise<void> {
   if (records.length === 0) return;
 
-  // Many reports return period aggregates with no timestamp of their own (e.g. Queue Callbacks
-  // is just per-queue counts) — stamp every row with the sync window so rows from different
-  // runs stay distinguishable in BigQuery.
+  // 很多報表回來的是區間彙總數字，本身沒有時間戳（例如 Queue Callbacks 只是每個 queue 的計數）——
+  // 幫每一列蓋上這次同步的時間區間，這樣不同次執行寫進 BigQuery 的資料才能分得出來。
   const enriched = records.map((record) => ({
     ...record,
     SyncPeriodFrom: period.from,

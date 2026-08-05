@@ -25,7 +25,7 @@ export const config = {
   bigquery: {
     projectId: required('BQ_PROJECT_ID'),
     dataset: required('BQ_DATASET'),
-    // Table name matches REPORT_TYPE 1:1 — create a BigQuery table with that exact name.
+    // Table 名稱跟 REPORT_TYPE 1:1 對應 —— 要用完全一樣的名稱建 BigQuery table。
     table: required('REPORT_TYPE'),
   },
   sync: {
