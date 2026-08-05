@@ -17,8 +17,8 @@ export async function insertRecords(
   // 幫每一列蓋上這次同步的時間區間，這樣不同次執行寫進 BigQuery 的資料才能分得出來。
   const enriched = records.map((record) => ({
     ...record,
-    SyncPeriodFrom: period.from,
-    SyncPeriodTo: period.to,
+    PeriodFrom: period.from,
+    PeriodTo: period.to,
   }));
 
   const table = bigquery.dataset(config.bigquery.dataset).table(config.bigquery.table);
