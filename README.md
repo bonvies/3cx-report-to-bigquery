@@ -28,7 +28,8 @@ src/
 | `BASE_URL_3CX` | 3CX PBX 網址，例如 `https://yourpbx.3cx.tw` |
 | `CLIENT_ID_3CX` / `CLIENT_SECRET_3CX` | 3CX X-API 的 client credentials |
 | `BQ_PROJECT_ID` / `BQ_DATASET` | 要寫入的 BigQuery 專案／dataset |
-| `PERIOD_PRESET` | 同步區間，比照 3CX 網頁報表的快速選項：`custom` \| `thisMinute` \| `thisHour` \| `today` \| `yesterday` \| `last7Days` \| `lastWeek` \| `last30Days` \| `thisMonth` \| `lastMonth` \| `thisYear` \| `lastYear`，**必填、沒有預設值** |
+| `GOOGLE_APPLICATION_CREDENTIALS` | BigQuery 認證用的服務帳戶金鑰路徑，選填。留空則走 ADC 後援機制（本機用 `gcloud auth application-default login` 登入的個人帳號，部署到 GCP 服務上則用該服務綁定的身分） |
+| `PERIOD_PRESET` | 同步區間，比照 3CX 網頁報表的快速選項：`custom` \| `thisMinute` \| `lastMinute` \| `last5Minutes` \| `last10Minutes` \| `last15Minutes` \| `lastHalfHour` \| `thisHour` \| `lastHour` \| `today` \| `yesterday` \| `last7Days` \| `lastWeek` \| `last30Days` \| `thisMonth` \| `lastMonth` \| `thisYear` \| `lastYear`，**必填、沒有預設值** |
 | `PERIOD_FROM` / `PERIOD_TO` | 自訂 backfill 區間（ISO 8601），只有 `PERIOD_PRESET=custom` 時才會讀取，兩個都要填 |
 
 > BigQuery table 名稱不是獨立設定，直接沿用 `REPORT_TYPE` 的值（`config.ts` 裡 `bigquery.table = REPORT_TYPE`）。要跑哪個 report，就要先在 `BQ_DATASET` 裡手動建一張同名的 table，例如 `REPORT_TYPE=callLog` 就要有一張叫 `callLog` 的 table。
