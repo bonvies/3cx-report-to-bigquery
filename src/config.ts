@@ -27,6 +27,9 @@ export const config = {
     dataset: required('BQ_DATASET'),
     // Table 名稱跟 REPORT_TYPE 1:1 對應 —— 要用完全一樣的名稱建 BigQuery table。
     table: required('REPORT_TYPE'),
+    // 選填。google-auth-library 本來就會自動讀 process.env.GOOGLE_APPLICATION_CREDENTIALS，
+    // 這裡顯式帶出來只是讓 bigquery.ts 的認證來源看得到、不用去猜隱性行為；留空則走 ADC 後援機制。
+    keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS || undefined,
   },
   sync: {
     // 業務時區 — 除 custom 外的 preset 都是以這個時區的乾淨邊界為準，預設 Asia/Taipei

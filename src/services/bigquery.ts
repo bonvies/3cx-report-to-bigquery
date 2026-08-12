@@ -1,7 +1,9 @@
 import { BigQuery } from '@google-cloud/bigquery';
 import { config } from '@/config.js';
 
-const bigquery = new BigQuery({ projectId: config.bigquery.projectId });
+// keyFilename 為 undefined 時等同不傳 —— BigQuery 內部一樣會退回 ADC 後援機制，
+// 這裡顯式帶出來純粹是讓認證來源在這個檔案裡看得到，不影響行為。
+const bigquery = new BigQuery({ projectId: config.bigquery.projectId, keyFilename: config.bigquery.keyFilename });
 
 function isPartialFailureError(error: unknown): error is { errors: unknown } {
   return typeof error === 'object' && error !== null && 'errors' in error;
