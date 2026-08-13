@@ -24,32 +24,40 @@ async function main() {
         const records = await getCallLog(periodFrom.toISOString(), periodTo.toISOString());
         console.log(`Fetched ${records.length} Call Log records`);
 
-        await insertRecords(records, { from: periodFrom.toISOString(), to: periodTo.toISOString() });
-        console.log(`Inserted ${records.length} records into ${config.bigquery.dataset}.${config.bigquery.table}`);
+        const inserted = await insertRecords(records, { from: periodFrom.toISOString(), to: periodTo.toISOString() });
+        if (inserted) {
+          console.log(`Inserted ${records.length} records into ${config.bigquery.dataset}.${config.bigquery.table}`);
+        }
         break;
       }
       case 'queueCallbacks': {
         const records = await getQueueCallbacks(periodFrom.toISOString(), periodTo.toISOString());
         console.log(`Fetched ${records.length} Queue Callback records`);
 
-        await insertRecords(records, { from: periodFrom.toISOString(), to: periodTo.toISOString() });
-        console.log(`Inserted ${records.length} records into ${config.bigquery.dataset}.${config.bigquery.table}`);
+        const inserted = await insertRecords(records, { from: periodFrom.toISOString(), to: periodTo.toISOString() });
+        if (inserted) {
+          console.log(`Inserted ${records.length} records into ${config.bigquery.dataset}.${config.bigquery.table}`);
+        }
         break;
       }
       case 'queueAnsweredCallsByWaitTime': {
         const records = await getQueueAnsweredCallsByWaitTime(periodFrom.toISOString(), periodTo.toISOString());
         console.log(`Fetched ${records.length} Queue Answered Calls By Wait Time records`);
 
-        await insertRecords(records, { from: periodFrom.toISOString(), to: periodTo.toISOString() });
-        console.log(`Inserted ${records.length} records into ${config.bigquery.dataset}.${config.bigquery.table}`);
+        const inserted = await insertRecords(records, { from: periodFrom.toISOString(), to: periodTo.toISOString() });
+        if (inserted) {
+          console.log(`Inserted ${records.length} records into ${config.bigquery.dataset}.${config.bigquery.table}`);
+        }
         break;
       }
       case 'statisticSla': {
         const records = await getStatisticSla(periodFrom.toISOString(), periodTo.toISOString());
         console.log(`Fetched ${records.length} Statistic SLA records`);
 
-        await insertRecords(records, { from: periodFrom.toISOString(), to: periodTo.toISOString() });
-        console.log(`Inserted ${records.length} records into ${config.bigquery.dataset}.${config.bigquery.table}`);
+        const inserted = await insertRecords(records, { from: periodFrom.toISOString(), to: periodTo.toISOString() });
+        if (inserted) {
+          console.log(`Inserted ${records.length} records into ${config.bigquery.dataset}.${config.bigquery.table}`);
+        }
         break;
       }
       // 之後要加新的 report，就在這裡多加一個 case
