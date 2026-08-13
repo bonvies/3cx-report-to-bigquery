@@ -54,9 +54,10 @@ async function main() {
         }
         break;
       }
-      case 'queueCallbacks': {
-        const records = await getQueueCallbacks(periodFrom.toISOString(), periodTo.toISOString());
-        console.log(`Fetched ${records.length} Queue Callback records`);
+      // R-04 佇列接聽呼叫依等待時間 Queue Answered Calls By Wait Time
+      case 'queueAnsweredCallsByWaitTime': {
+        const records = await getQueueAnsweredCallsByWaitTime(periodFrom.toISOString(), periodTo.toISOString());
+        console.log(`Fetched ${records.length} Queue Answered Calls By Wait Time records`);
 
         const inserted = await insertRecords(records, { from: periodFrom.toISOString(), to: periodTo.toISOString() });
         if (inserted) {
@@ -64,9 +65,9 @@ async function main() {
         }
         break;
       }
-      case 'queueAnsweredCallsByWaitTime': {
-        const records = await getQueueAnsweredCallsByWaitTime(periodFrom.toISOString(), periodTo.toISOString());
-        console.log(`Fetched ${records.length} Queue Answered Calls By Wait Time records`);
+      case 'queueCallbacks': {
+        const records = await getQueueCallbacks(periodFrom.toISOString(), periodTo.toISOString());
+        console.log(`Fetched ${records.length} Queue Callback records`);
 
         const inserted = await insertRecords(records, { from: periodFrom.toISOString(), to: periodTo.toISOString() });
         if (inserted) {
