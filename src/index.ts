@@ -4,6 +4,7 @@ import { getQueueAnsweredCallsByWaitTime } from './services/api/getQueueAnswered
 import { getStatisticSla } from './services/api/getStatisticSla.js';
 import { getCallLog } from './services/api/getCallLog.js';
 import { getInboundRules } from './services/api/getInboundRules.js';
+import { getAbandonedQueueCalls } from './services/api/getAbandonedQueueCalls.js';
 import { insertRecords } from './services/bigquery.js';
 import getSyncWindow from './util/getSyncWindow.js';
 
@@ -31,10 +32,21 @@ async function main() {
         }
         break;
       }
-      // R-02 進線規則 Inbound Rules —— 目前設定的快照，API 本身沒有 periodFrom/periodTo 參數
+      // R-02 進線規則 Inbound Rules
       case 'inboundRules': {
         const records = await getInboundRules();
         console.log(`Fetched ${records.length} Inbound Rule records`);
+
+        const inserted = await insertRecords(records, { from: periodFrom.toISOString(), to: periodTo.toISOString() });
+        if (inserted) {
+          console.log(`Inserted ${records.length} records into ${config.bigquery.dataset}.${config.bigquery.table}`);
+        }
+        break;
+      }
+      // R-03 放棄的佇列呼叫 Abandoned Queue Calls
+      case 'abandonedQueueCalls': {
+        const records = await getAbandonedQueueCalls(periodFrom.toISOString(), periodTo.toISOString());
+        console.log(`Fetched ${records.length} Abandoned Queue Call records`);
 
         const inserted = await insertRecords(records, { from: periodFrom.toISOString(), to: periodTo.toISOString() });
         if (inserted) {
