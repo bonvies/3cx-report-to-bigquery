@@ -9,9 +9,9 @@ const endpoint = '/xapi/v1/ReportQueueAnsweredCallsByWaitTime/Pbx.GetQueueAnswer
 
 // 對齊 3CX 網頁報表送出的請求：queueDnStr/startDt/endDt/answerInterval 都是必填。
 // answerInterval='0:00:0' 是預設值（不分桶）。
-// queueDnStr 暫時寫死 '0336'，之後跟 PM 確認實際要涵蓋哪些 queue 分機號碼再回來改。
+// queueDnStr=''（空字串）代表「所有 queue」—— 直接帶不加引號的 OData `null` 會被 3CX 拒絕，回「The queueDnStr field is required.」。
 const path = (sinceIso: string, untilIso: string) =>
-  `${endpoint}(queueDnStr='0336',startDt=${sinceIso},endDt=${untilIso},answerInterval='0:00:0')`;
+  `${endpoint}(queueDnStr='',startDt=${sinceIso},endDt=${untilIso},answerInterval='0:00:0')`;
 
 const PAGE_SIZE = 1000;
 
