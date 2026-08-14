@@ -76,6 +76,7 @@ async function main() {
         }
         break;
       }
+      // R-06 SLA 統計 Statistic SLA
       case 'statisticSla': {
         const records = await getStatisticSla(periodFrom.toISOString(), periodTo.toISOString());
         console.log(`Fetched ${records.length} Statistic SLA records`);
