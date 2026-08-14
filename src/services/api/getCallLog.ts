@@ -1,9 +1,6 @@
 import describeError from '@/util/describeError.js';
+import type { CallLogRecord } from '@/types/apiType.js';
 import { axios3CXInstance } from './connectToken.js';
-
-export type CallLogRecord = {
-  [key: string]: unknown;
-};
 
 const endpoint = '/xapi/v1/ReportCallLogData/Pbx.GetCallLogData'
 

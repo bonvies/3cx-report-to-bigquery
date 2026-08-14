@@ -1,9 +1,6 @@
 import describeError from '@/util/describeError.js';
+import type { QueueCallbackRecord } from '@/types/apiType.js';
 import { axios3CXInstance } from './connectToken.js';
-
-export type QueueCallbackRecord = {
-  [key: string]: unknown;
-};
 
 const endpoint = '/xapi/v1/ReportQueueCallbacks/Pbx.GetQueueCallbacksData';
 

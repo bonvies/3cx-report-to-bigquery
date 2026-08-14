@@ -1,9 +1,6 @@
 import describeError from '@/util/describeError.js';
+import type { AbandonedQueueCallRecord } from '@/types/apiType.js';
 import { axios3CXInstance } from './connectToken.js';
-
-export type AbandonedQueueCallRecord = {
-  [key: string]: unknown;
-};
 
 const endpoint = '/xapi/v1/ReportAbandonedQueueCalls/Pbx.GetAbandonedQueueCallsData';
 

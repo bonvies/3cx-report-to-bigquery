@@ -1,18 +1,6 @@
 import describeError from '@/util/describeError.js';
+import type { InboundRuleDestination, InboundRuleRecord, InboundRuleRow } from '@/types/apiType.js';
 import { axios3CXInstance } from './connectToken.js';
-
-export type InboundRuleRecord = {
-  [key: string]: unknown;
-};
-
-type Destination = {
-  External?: string;
-  Name?: string;
-  Number?: string;
-  Tags?: string[];
-  To?: string;
-  Type?: string;
-};
 
 const endpoint = '/xapi/v1/ReportInboundRules/Pbx.GetInboundRulesData()';
 
@@ -24,31 +12,47 @@ const PAGE_SIZE = 100;
 // 一律扁平化存放（比照這個專案其他報表的做法，不用巢狀 STRUCT）—— 攤平成 InOfficeRouting_To/
 // _Number/_Name/_Type/_External 這幾個欄位，Tags 是字串陣列，合併成逗號分隔的字串存放。
 // 有些規則（例如 To: "None"）底下完全沒有 Number/Name/Type/External，用 optional chaining 補 null。
-function flattenDestination(prefix: string, destination: Destination | null | undefined): Record<string, unknown> {
+function flattenDestination(destination: InboundRuleDestination | null | undefined) {
   return {
-    [`${prefix}_To`]: destination?.To ?? null,
-    [`${prefix}_Number`]: destination?.Number ?? null,
-    [`${prefix}_Name`]: destination?.Name ?? null,
-    [`${prefix}_Type`]: destination?.Type ?? null,
-    [`${prefix}_External`]: destination?.External ?? null,
-    [`${prefix}_Tags`]: destination?.Tags && destination.Tags.length > 0 ? destination.Tags.join(',') : null,
+    To: destination?.To ?? null,
+    Number: destination?.Number ?? null,
+    Name: destination?.Name ?? null,
+    Type: destination?.Type ?? null,
+    External: destination?.External ?? null,
+    Tags: destination?.Tags && destination.Tags.length > 0 ? destination.Tags.join(',') : null,
   };
 }
 
-function flattenRecord(record: InboundRuleRecord): InboundRuleRecord {
-  const { InOfficeRouting, OutOfficeRouting, ...rest } = record;
+function flattenRecord(record: InboundRuleRecord): InboundRuleRow {
+  const { RuleName, DID, Trunk, Id, InOfficeRouting, OutOfficeRouting } = record;
+  const inOffice = flattenDestination(InOfficeRouting);
+  const outOffice = flattenDestination(OutOfficeRouting);
+
   return {
-    ...rest,
-    ...flattenDestination('InOfficeRouting', InOfficeRouting as Destination | undefined),
-    ...flattenDestination('OutOfficeRouting', OutOfficeRouting as Destination | undefined),
+    RuleName,
+    DID,
+    Trunk,
+    Id,
+    InOfficeRouting_To: inOffice.To,
+    InOfficeRouting_Number: inOffice.Number,
+    InOfficeRouting_Name: inOffice.Name,
+    InOfficeRouting_Type: inOffice.Type,
+    InOfficeRouting_External: inOffice.External,
+    InOfficeRouting_Tags: inOffice.Tags,
+    OutOfficeRouting_To: outOffice.To,
+    OutOfficeRouting_Number: outOffice.Number,
+    OutOfficeRouting_Name: outOffice.Name,
+    OutOfficeRouting_Type: outOffice.Type,
+    OutOfficeRouting_External: outOffice.External,
+    OutOfficeRouting_Tags: outOffice.Tags,
   };
 }
 
 // GetInboundRulesData 沒有 periodFrom/periodTo 參數 —— 這是目前設定的快照，不是某段時間內發生的事件，
 // 不管什麼時候查都是回傳「現在」的進線規則，呼叫端仍會另外蓋上 PeriodFrom/PeriodTo 標記這次快照的時間點。
-export async function getInboundRules(): Promise<InboundRuleRecord[]> {
+export async function getInboundRules(): Promise<InboundRuleRow[]> {
   try {
-    const records: InboundRuleRecord[] = [];
+    const records: InboundRuleRow[] = [];
     let skip = 0;
 
     while (true) {

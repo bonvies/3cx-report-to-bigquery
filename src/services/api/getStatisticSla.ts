@@ -1,9 +1,6 @@
 import describeError from '@/util/describeError.js';
+import type { StatisticSlaRecord } from '@/types/apiType.js';
 import { axios3CXInstance } from './connectToken.js';
-
-export type StatisticSlaRecord = {
-  [key: string]: unknown;
-};
 
 const endpoint = '/xapi/v1/ReportStatisticSla/Pbx.GetStatisticSlaData';
 
