@@ -65,6 +65,7 @@ async function main() {
         }
         break;
       }
+      // R-05 佇列回撥 Queue Callbacks
       case 'queueCallbacks': {
         const records = await getQueueCallbacks(periodFrom.toISOString(), periodTo.toISOString());
         console.log(`Fetched ${records.length} Queue Callback records`);
