@@ -124,3 +124,14 @@ export type StatisticSlaRecord = {
   ReceivedCount: number;
   BadSlaCallsCount: number;
 };
+
+// R-07 佇列績效總覽 Queue Performance Overview — 實際 API 是 ReportQueuePerformanceTotals/Pbx.GetQueuePerformanceTotalsData
+// QueueReceivedCount/ExtensionAnsweredCount/ExtensionDroppedCount 實測發現只有計數不為 0 才會出現在回應裡，
+// 計數是 0 的欄位整個 key 都不見（不是回傳 0 或 null），所以這裡都是 optional。
+export type QueuePerformanceTotalsRecord = {
+  QueueDn: string;
+  QueueDisplayName: string;
+  QueueReceivedCount?: number;
+  ExtensionAnsweredCount?: number;
+  ExtensionDroppedCount?: number;
+};

@@ -5,6 +5,7 @@ import { getStatisticSla } from './services/api/getStatisticSla.js';
 import { getCallLog } from './services/api/getCallLog.js';
 import { getInboundRules } from './services/api/getInboundRules.js';
 import { getAbandonedQueueCalls } from './services/api/getAbandonedQueueCalls.js';
+import { getQueuePerformanceTotals } from './services/api/getQueuePerformanceTotals.js';
 import { insertRecords } from './services/bigquery.js';
 import getSyncWindow from './util/getSyncWindow.js';
 
@@ -80,6 +81,17 @@ async function main() {
       case 'statisticSla': {
         const records = await getStatisticSla(periodFrom.toISOString(), periodTo.toISOString());
         console.log(`Fetched ${records.length} Statistic SLA records`);
+
+        const inserted = await insertRecords(records, { from: periodFrom.toISOString(), to: periodTo.toISOString() });
+        if (inserted) {
+          console.log(`Inserted ${records.length} records into ${config.bigquery.dataset}.${config.bigquery.table}`);
+        }
+        break;
+      }
+      // R-07 佇列績效總覽 Queue Performance Overview（實際 API 是 QueuePerformanceTotals）
+      case 'queuePerformanceTotals': {
+        const records = await getQueuePerformanceTotals(periodFrom.toISOString(), periodTo.toISOString());
+        console.log(`Fetched ${records.length} Queue Performance Totals records`);
 
         const inserted = await insertRecords(records, { from: periodFrom.toISOString(), to: periodTo.toISOString() });
         if (inserted) {
