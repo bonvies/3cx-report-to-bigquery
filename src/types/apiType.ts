@@ -176,3 +176,20 @@ export type AgentsInQueueStatisticsRecord = {
   TalkTime: string;
   AvgTalkTime: string;
 };
+
+// R-11 專員登入歷史 Agent Login History — 每一列是「某個專員在某個 queue 底下、某一天」的登入彙總。
+// loggedInDt 刻意維持 API 原本的小寫開頭，其餘欄位都是 PascalCase（3CX 這支 API 本身命名就不一致）。
+export type AgentLoginHistoryRecord = {
+  QueueNo: string;
+  AgentNo: string;
+  Agent: string;
+  Day: string;
+  loggedInDt: string;
+  LoggedOutDt: string;
+  LoggedInInterval: string;
+  LoggedInDayInterval: string;
+  LoggedInTotalInterval: string;
+  TalkingInterval: string;
+  TalkingDayInterval: string;
+  TalkingTotalInterval: string;
+};
