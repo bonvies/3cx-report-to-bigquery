@@ -257,3 +257,11 @@ export type OutboundCallRecord = {
   RecordingUrl?: string;
   QualityReport: boolean;
 };
+
+// R-15 使用者活動 User Activity（U6+）
+// 跟前面幾張逐筆通話報表不同，這張是依時間區段分桶的彙總計數，不是逐筆通話清單。
+export type UserActivityRecord = {
+  DateTimeInterval: string;
+  AnsweredCount: number;
+  UnansweredCount: number;
+};
