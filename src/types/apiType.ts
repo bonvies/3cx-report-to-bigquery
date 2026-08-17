@@ -232,3 +232,28 @@ export type InboundCallRecord = {
   RecordingUrl?: string;
   QualityReport: boolean;
 };
+
+// R-14 撥出通話報表 Outbound Call Report（U6+）
+// RecordingId/RecordingUrl 只有這通電話有錄音才會出現，沒有錄音時整個 key 不存在（跟 R-13 同一種行為）。
+export type OutboundCallRecord = {
+  CdrId: string;
+  CallHistoryId: string;
+  StartTime: string;
+  TrunkName: string;
+  TrunkNumber: string;
+  SourceDn: string;
+  SourceCallerId: string;
+  SourceDisplayName: string;
+  DestinationDn: string;
+  DestinationCalleeId: string;
+  DestinationDisplayName: string;
+  Answered: boolean;
+  Status: string;
+  RingingDuration: string;
+  TalkingDuration: string;
+  CallDuration: string;
+  CallCost: number;
+  RecordingId?: number;
+  RecordingUrl?: string;
+  QualityReport: boolean;
+};

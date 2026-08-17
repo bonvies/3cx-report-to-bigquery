@@ -12,6 +12,7 @@ import { getAgentsInQueueStatistics } from './services/api/getAgentsInQueueStati
 import { getAgentLoginHistory } from './services/api/getAgentLoginHistory.js';
 import { getRingGroupStatistics } from './services/api/getRingGroupStatistics.js';
 import { getInboundCalls } from './services/api/getInboundCalls.js';
+import { getOutboundCalls } from './services/api/getOutboundCalls.js';
 import { insertRecords } from './services/bigquery.js';
 import getSyncWindow from './util/getSyncWindow.js';
 
@@ -164,6 +165,17 @@ async function main() {
       case 'inboundCalls': {
         const records = await getInboundCalls(periodFrom.toISOString(), periodTo.toISOString());
         console.log(`Fetched ${records.length} Inbound Call records`);
+
+        const inserted = await insertRecords(records, { from: periodFrom.toISOString(), to: periodTo.toISOString() });
+        if (inserted) {
+          console.log(`Inserted ${records.length} records into ${config.bigquery.dataset}.${config.bigquery.table}`);
+        }
+        break;
+      }
+      // R-14 撥出通話報表 Outbound Call Report（U6+）
+      case 'outboundCalls': {
+        const records = await getOutboundCalls(periodFrom.toISOString(), periodTo.toISOString());
+        console.log(`Fetched ${records.length} Outbound Call records`);
 
         const inserted = await insertRecords(records, { from: periodFrom.toISOString(), to: periodTo.toISOString() });
         if (inserted) {
