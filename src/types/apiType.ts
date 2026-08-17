@@ -135,3 +135,16 @@ export type QueuePerformanceTotalsRecord = {
   ExtensionAnsweredCount?: number;
   ExtensionDroppedCount?: number;
 };
+
+// R-08 詳細佇列統計 Detailed Queue Statistics
+export type DetailedQueueStatisticsRecord = {
+  QueueDnNumber: string;
+  QueueDn: string;
+  CallsCount: number;
+  AnsweredCount: number;
+  RingTime: string;
+  AvgRingTime: string;
+  TalkTime: string;
+  AvgTalkTime: string;
+  CallbacksCount: number;
+};

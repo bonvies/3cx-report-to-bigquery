@@ -6,6 +6,7 @@ import { getCallLog } from './services/api/getCallLog.js';
 import { getInboundRules } from './services/api/getInboundRules.js';
 import { getAbandonedQueueCalls } from './services/api/getAbandonedQueueCalls.js';
 import { getQueuePerformanceTotals } from './services/api/getQueuePerformanceTotals.js';
+import { getDetailedQueueStatistics } from './services/api/getDetailedQueueStatistics.js';
 import { insertRecords } from './services/bigquery.js';
 import getSyncWindow from './util/getSyncWindow.js';
 
@@ -92,6 +93,17 @@ async function main() {
       case 'queuePerformanceTotals': {
         const records = await getQueuePerformanceTotals(periodFrom.toISOString(), periodTo.toISOString());
         console.log(`Fetched ${records.length} Queue Performance Totals records`);
+
+        const inserted = await insertRecords(records, { from: periodFrom.toISOString(), to: periodTo.toISOString() });
+        if (inserted) {
+          console.log(`Inserted ${records.length} records into ${config.bigquery.dataset}.${config.bigquery.table}`);
+        }
+        break;
+      }
+      // R-08 詳細佇列統計 Detailed Queue Statistics
+      case 'detailedQueueStatistics': {
+        const records = await getDetailedQueueStatistics(periodFrom.toISOString(), periodTo.toISOString());
+        console.log(`Fetched ${records.length} Detailed Queue Statistics records`);
 
         const inserted = await insertRecords(records, { from: periodFrom.toISOString(), to: periodTo.toISOString() });
         if (inserted) {
