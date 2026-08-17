@@ -193,3 +193,11 @@ export type AgentLoginHistoryRecord = {
   TalkingDayInterval: string;
   TalkingTotalInterval: string;
 };
+
+// R-12 響鈴群組統計 Ring Groups
+export type RingGroupStatisticsRecord = {
+  RingGroupDn: string;
+  RingGroupDisplayName: string;
+  RingGroupReceivedCount: number;
+  RingGroupAnsweredCount: number;
+};
