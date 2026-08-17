@@ -148,3 +148,14 @@ export type DetailedQueueStatisticsRecord = {
   AvgTalkTime: string;
   CallbacksCount: number;
 };
+
+// R-09 團隊佇列總體統計 Team Queue General Statistics
+export type TeamQueueGeneralStatisticsRecord = {
+  QueueDnNumber: string;
+  Dn: string;
+  AgentsInQueueCount: number;
+  ReceivedCount: number;
+  AnsweredCount: number;
+  TotalTalkTime: string;
+  AvgTalkTime: string;
+};
