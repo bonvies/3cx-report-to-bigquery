@@ -11,6 +11,7 @@ import { getTeamQueueGeneralStatistics } from './services/api/getTeamQueueGenera
 import { getAgentsInQueueStatistics } from './services/api/getAgentsInQueueStatistics.js';
 import { getAgentLoginHistory } from './services/api/getAgentLoginHistory.js';
 import { getRingGroupStatistics } from './services/api/getRingGroupStatistics.js';
+import { getInboundCalls } from './services/api/getInboundCalls.js';
 import { insertRecords } from './services/bigquery.js';
 import getSyncWindow from './util/getSyncWindow.js';
 
@@ -152,6 +153,17 @@ async function main() {
       case 'ringGroupStatistics': {
         const records = await getRingGroupStatistics(periodFrom.toISOString(), periodTo.toISOString());
         console.log(`Fetched ${records.length} Ring Group Statistics records`);
+
+        const inserted = await insertRecords(records, { from: periodFrom.toISOString(), to: periodTo.toISOString() });
+        if (inserted) {
+          console.log(`Inserted ${records.length} records into ${config.bigquery.dataset}.${config.bigquery.table}`);
+        }
+        break;
+      }
+      // R-13 進線通話報表 Inbound Call Report（U6+）
+      case 'inboundCalls': {
+        const records = await getInboundCalls(periodFrom.toISOString(), periodTo.toISOString());
+        console.log(`Fetched ${records.length} Inbound Call records`);
 
         const inserted = await insertRecords(records, { from: periodFrom.toISOString(), to: periodTo.toISOString() });
         if (inserted) {

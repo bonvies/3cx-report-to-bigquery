@@ -201,3 +201,27 @@ export type RingGroupStatisticsRecord = {
   RingGroupReceivedCount: number;
   RingGroupAnsweredCount: number;
 };
+
+// R-13 進線通話報表 Inbound Call Report（U6+）
+// RecordingId/RecordingUrl 只有這通電話有錄音才會出現，沒有錄音時整個 key 不存在。
+export type InboundCallRecord = {
+  CdrId: string;
+  CallHistoryId: string;
+  StartTime: string;
+  TrunkName: string;
+  TrunkNumber: string;
+  Did: string;
+  SourceDn: string;
+  SourceCallerId: string;
+  SourceDisplayName: string;
+  DestinationDn: string;
+  DestinationCallerId: string;
+  DestinationDisplayName: string;
+  Status: string;
+  RingingDuration: string;
+  TalkingDuration: string;
+  CallDuration: string;
+  RecordingId?: number;
+  RecordingUrl?: string;
+  QualityReport: boolean;
+};
