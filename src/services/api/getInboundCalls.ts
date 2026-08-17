@@ -4,9 +4,9 @@ import { axios3CXInstance } from './connectToken.js';
 
 const endpoint = '/xapi/v1/ReportInboundCalls/Pbx.GetInboundCalls';
 
-// 對齊官方 x-api $metadata 的函式簽章：periodFrom/periodTo/trunkDns/callsType 都是必填
-// （這支報表在 3CX 網頁沒有明顯對應畫面，簽章直接查 $metadata 確認，見 SOP 第 4 步）。
-// trunkDns=''（空字串）代表「所有 trunk」，callsType=0 比照 Call Log 代表「不篩選」，都已驗證可行。
+// 對齊官方 x-api $metadata 的函式簽章：periodFrom/periodTo/trunkDns/callsType 都是必填。
+// trunkDns=''（空字串）代表「所有 trunk」，callsType=0 比照 Call Log 代表「不篩選」，都已跟網頁
+// 真實請求核對確認可行。
 const path = (sinceIso: string, untilIso: string) =>
   `${endpoint}(periodFrom=${sinceIso},periodTo=${untilIso},trunkDns='',callsType=0)`;
 

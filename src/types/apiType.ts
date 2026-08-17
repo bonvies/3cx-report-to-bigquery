@@ -2,10 +2,15 @@
 // 欄位定義依照 logs/BIGQUERY_SETUP.md 記錄的實測結果，新增/調整報表時兩邊要一起更新。
 
 // R-01 通話日誌 Call Log
+// ActionDnCallerId/ActionDnDisplayName/actionDnDn/SentimentScore/Summary/Transcription 實測 50 筆
+// 真實資料一次都沒出現過（$metadata 確認是合法欄位，只是這批資料剛好沒有觸發到相關功能，例如
+// AI 通話摘要/情緒分析、或call被轉接/action到其他分機的情境）；DstRecId/RecordingUrl/SrcRecId
+// 則是部分出現（14/50）。都是 3CX 的通例：值為 null 時整個 key 不會出現在回應裡，不是回傳
+// null，所以這裡都改成 optional，不用 `| null`。
 export type CallLogRecord = {
-  ActionDnCallerId: string | null;
-  ActionDnDisplayName: string | null;
-  actionDnDn: string | null;
+  ActionDnCallerId?: string;
+  ActionDnDisplayName?: string;
+  actionDnDn?: string;
   ActionDnType: number | null;
   ActionType: number | null;
   Answered: boolean | null;
@@ -19,26 +24,26 @@ export type CallLogRecord = {
   DestinationDn: string | null;
   DestinationType: number | null;
   Direction: string | null;
-  DstRecId: number | null;
+  DstRecId?: number;
   Indent: number | null;
   MainCallHistoryId: string | null;
   QualityReport: boolean | null;
   Reason: string | null;
-  RecordingUrl: string | null;
+  RecordingUrl?: string;
   RingingDuration: string | null;
   SegmentId: number | null;
-  SentimentScore: number | null;
+  SentimentScore?: number;
   SourceCallerId: string | null;
   SourceDisplayName: string | null;
   SourceDn: string | null;
   SourceType: number | null;
-  SrcRecId: number | null;
+  SrcRecId?: number;
   StartTime: string;
   Status: string | null;
   SubrowDescNumber: number | null;
-  Summary: string | null;
+  Summary?: string;
   TalkingDuration: string | null;
-  Transcription: string | null;
+  Transcription?: string;
   // 只有我們自己的 3CX 會回傳這個欄位，客戶的 3CX 沒有，見 getCallLog.ts 的 omitRecordings。
   Recordings?: unknown[];
 };
@@ -103,10 +108,12 @@ export type QueueAnsweredCallsByWaitTimeRecord = {
 };
 
 // R-03 放棄的佇列呼叫 Abandoned Queue Calls
+// 同一通被放棄的電話如果依序 poll 過不只一個分機（同一個 CallHistoryId 出現多列），實測發現只有
+// 第一列有 CallTime，後面幾列只有 CallTimeForCsv、沒有 CallTime——CallTime 因此是 optional。
 export type AbandonedQueueCallRecord = {
   QueueDn: string;
   QueueDisplayName: string;
-  CallTime: string;
+  CallTime?: string;
   CallTimeForCsv: string;
   WaitTime: string;
   CallerId: string;

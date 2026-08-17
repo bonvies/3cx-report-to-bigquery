@@ -4,9 +4,8 @@ import { axios3CXInstance } from './connectToken.js';
 
 const endpoint = '/xapi/v1/ReportRingGroupStatistics/Pbx.GetRingGroupStatisticsData';
 
-// 對齊官方 x-api $metadata 的函式簽章：periodFrom/periodTo/ringGroupDns 都是必填
-// （這支報表在 3CX 網頁沒有明顯對應畫面，簽章直接查 $metadata 確認，見 SOP 第 4 步）。
-// ringGroupDns=''（空字串）代表「所有響鈴群組」，已驗證可行。
+// 對齊官方 x-api $metadata 的函式簽章：periodFrom/periodTo/ringGroupDns 都是必填。
+// ringGroupDns=''（空字串）代表「所有響鈴群組」，已跟網頁真實請求核對確認可行。
 const path = (sinceIso: string, untilIso: string) =>
   `${endpoint}(periodFrom=${sinceIso},periodTo=${untilIso},ringGroupDns='')`;
 
