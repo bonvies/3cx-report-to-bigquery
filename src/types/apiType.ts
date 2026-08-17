@@ -159,3 +159,20 @@ export type TeamQueueGeneralStatisticsRecord = {
   TotalTalkTime: string;
   AvgTalkTime: string;
 };
+
+// R-10 佇列專員統計 Agents in Queue Statistics
+export type AgentsInQueueStatisticsRecord = {
+  Dn: string;
+  DnDisplayName: string;
+  Queue: string;
+  QueueDisplayName: string;
+  LoggedInTime: string;
+  LostCount: number;
+  AnsweredCount: number;
+  AnsweredPercent: number;
+  AnsweredPerHourCount: number;
+  RingTime: string;
+  AvgRingTime: string;
+  TalkTime: string;
+  AvgTalkTime: string;
+};
