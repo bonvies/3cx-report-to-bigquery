@@ -21,9 +21,9 @@ function isPartialFailureError(error: unknown): error is { errors: unknown } {
 // 只有第一次執行會真的寫入。跨區間重疊（例如手動 backfill 撞到自動排程）一樣抓不到，人工查閱抓漏。
 //
 // callLog/abandonedQueueCalls/queueAnsweredCallsByWaitTime/agentLoginHistory/inboundCalls/outboundCalls/
-// userActivity 依各自資料本身的業務時間欄位做 DAY 分區（見 logs/BIGQUERY_SETUP.md），只用
-// PeriodFrom/PeriodTo 篩選會導致全表掃描，要額外加一個對應欄位的範圍條件才能命中分區；彙總類報表
-// 沒有自然時間欄位，PeriodFrom 本身就是分區欄位，不需要額外條件。
+// userActivity/callDistribution 依各自資料本身的業務時間欄位做 DAY 分區（見 logs/BIGQUERY_SETUP.md），
+// 只用 PeriodFrom/PeriodTo 篩選會導致全表掃描，要額外加一個對應欄位的範圍條件才能命中分區；彙總類
+// 報表沒有自然時間欄位，PeriodFrom 本身就是分區欄位，不需要額外條件。
 const PARTITION_FIELD_BY_TABLE: Partial<Record<string, string>> = {
   callLog: 'StartTime',
   abandonedQueueCalls: 'CallTime',
@@ -32,6 +32,7 @@ const PARTITION_FIELD_BY_TABLE: Partial<Record<string, string>> = {
   inboundCalls: 'StartTime',
   outboundCalls: 'StartTime',
   userActivity: 'DateTimeInterval',
+  callDistribution: 'DateTimeInterval',
 };
 
 async function periodAlreadyInserted(period: { from: string; to: string }): Promise<boolean> {

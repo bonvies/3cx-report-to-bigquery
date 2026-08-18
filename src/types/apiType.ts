@@ -265,3 +265,11 @@ export type UserActivityRecord = {
   AnsweredCount: number;
   UnansweredCount: number;
 };
+
+// R-16 通話分佈 Call Distribution（U6+）
+// 跟 R-15 同一個函式家族，簽章一致，只有回傳欄位不同：依時間區段分桶的彙總計數，不是逐筆通話清單。
+export type CallDistributionRecord = {
+  DateTimeInterval: string;
+  OutgoingCount: number;
+  IncomingCount: number;
+};
