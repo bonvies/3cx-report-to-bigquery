@@ -289,3 +289,20 @@ export type ExtensionStatisticsByGroupRecord = {
   OutboundUnansweredCount?: number;
   SentimentScore?: number;
 };
+
+// R-18 通話費用（分機／部門） Call Cost by Extension Dept — 逐筆通話清單（不是彙總數字），
+// 跟 R-13/R-14 同一種形狀，本身有 StartTime 業務時間欄位。
+export type CallCostByExtensionGroupRecord = {
+  SegId: string;
+  GroupName: string;
+  SrcDn: string;
+  SrcDisplayName: string;
+  StartTime: string;
+  DstDn: string;
+  DstDnClass: number;
+  IsAnswered: boolean;
+  TalkingDur: string;
+  RingingDur: string;
+  BillingCost: number;
+  CallType: string;
+};

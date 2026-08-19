@@ -16,6 +16,7 @@ import { getOutboundCalls } from './services/api/getOutboundCalls.js';
 import { getUserActivity } from './services/api/getUserActivity.js';
 import { getCallDistribution } from './services/api/getCallDistribution.js';
 import { getExtensionStatisticsByGroup } from './services/api/getExtensionStatisticsByGroup.js';
+import { getCallCostByExtensionGroup } from './services/api/getCallCostByExtensionGroup.js';
 import { insertRecords } from './services/bigquery.js';
 import getSyncWindow from './util/getSyncWindow.js';
 
@@ -212,6 +213,17 @@ async function main() {
       case 'extensionStatisticsByGroup': {
         const records = await getExtensionStatisticsByGroup(periodFrom.toISOString(), periodTo.toISOString());
         console.log(`Fetched ${records.length} Extension Statistics records`);
+
+        const inserted = await insertRecords(records, { from: periodFrom.toISOString(), to: periodTo.toISOString() });
+        if (inserted) {
+          console.log(`Inserted ${records.length} records into ${config.bigquery.dataset}.${config.bigquery.table}`);
+        }
+        break;
+      }
+      // R-18 通話費用（分機／部門） Call Cost by Extension Dept
+      case 'callCostByExtensionGroup': {
+        const records = await getCallCostByExtensionGroup(periodFrom.toISOString(), periodTo.toISOString());
+        console.log(`Fetched ${records.length} Call Cost by Extension Dept records`);
 
         const inserted = await insertRecords(records, { from: periodFrom.toISOString(), to: periodTo.toISOString() });
         if (inserted) {
