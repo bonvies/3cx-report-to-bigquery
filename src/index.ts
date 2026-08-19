@@ -15,6 +15,7 @@ import { getInboundCalls } from './services/api/getInboundCalls.js';
 import { getOutboundCalls } from './services/api/getOutboundCalls.js';
 import { getUserActivity } from './services/api/getUserActivity.js';
 import { getCallDistribution } from './services/api/getCallDistribution.js';
+import { getExtensionStatisticsByGroup } from './services/api/getExtensionStatisticsByGroup.js';
 import { insertRecords } from './services/bigquery.js';
 import getSyncWindow from './util/getSyncWindow.js';
 
@@ -200,6 +201,17 @@ async function main() {
       case 'callDistribution': {
         const records = await getCallDistribution(periodFrom.toISOString(), periodTo.toISOString());
         console.log(`Fetched ${records.length} Call Distribution records`);
+
+        const inserted = await insertRecords(records, { from: periodFrom.toISOString(), to: periodTo.toISOString() });
+        if (inserted) {
+          console.log(`Inserted ${records.length} records into ${config.bigquery.dataset}.${config.bigquery.table}`);
+        }
+        break;
+      }
+      // R-17 分機統計 Extension Statistics
+      case 'extensionStatisticsByGroup': {
+        const records = await getExtensionStatisticsByGroup(periodFrom.toISOString(), periodTo.toISOString());
+        console.log(`Fetched ${records.length} Extension Statistics records`);
 
         const inserted = await insertRecords(records, { from: periodFrom.toISOString(), to: periodTo.toISOString() });
         if (inserted) {

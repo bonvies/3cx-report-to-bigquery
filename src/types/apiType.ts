@@ -273,3 +273,19 @@ export type CallDistributionRecord = {
   OutgoingCount: number;
   IncomingCount: number;
 };
+
+// R-17 分機統計 Extension Statistics — 每個分機一列的彙總報表，本身沒有自然時間欄位（跟 R-09/R-12 同一種形狀）。
+// 實際端點是 ReportExtensionStatisticsByGroup/Pbx.GetExtensionStatisticsByGroupData，不是原本猜的
+// ReportExtensionStatistics/Pbx.GetExtensionStatisticsData（那支一律 500，可能是壞的或沒授權）。
+// 這個分機在這段區間沒有對應類型的通話時，整個欄位不存在（3CX null-omission pattern），不是 0。
+export type ExtensionStatisticsByGroupRecord = {
+  Dn: string;
+  DisplayName: string;
+  InboundAnsweredCount?: number;
+  InboundAnsweredTalkingDur?: string;
+  InboundUnansweredCount?: number;
+  OutboundAnsweredCount?: number;
+  OutboundAnsweredTalkingDur?: string;
+  OutboundUnansweredCount?: number;
+  SentimentScore?: number;
+};
