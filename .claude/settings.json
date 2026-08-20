@@ -1,0 +1,38 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/leo/Desktop/Program/Project/3cx-report-to-bigquery/code/3cx-report-to-bigquery/.claude/hooks/bash-guard.sh",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/leo/Desktop/Program/Project/3cx-report-to-bigquery/code/3cx-report-to-bigquery/.claude/hooks/env-guard.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/leo/Desktop/Program/Project/3cx-report-to-bigquery/code/3cx-report-to-bigquery/.claude/hooks/typecheck-guard.sh",
+            "timeout": 60
+          }
+        ]
+      }
+    ]
+  }
+}
