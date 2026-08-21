@@ -10,7 +10,7 @@ import { getDetailedQueueStatistics } from './services/api/getDetailedQueueStati
 import { getTeamQueueGeneralStatistics } from './services/api/getTeamQueueGeneralStatistics.js';
 import { getAgentsInQueueStatistics } from './services/api/getAgentsInQueueStatistics.js';
 import { getAgentLoginHistory } from './services/api/getAgentLoginHistory.js';
-import { getRingGroupStatistics } from './services/api/getRingGroupStatistics.js';
+import { getExtensionsStatisticsByRingGroups } from './services/api/getExtensionsStatisticsByRingGroups.js';
 import { getInboundCalls } from './services/api/getInboundCalls.js';
 import { getOutboundCalls } from './services/api/getOutboundCalls.js';
 import { getUserActivity } from './services/api/getUserActivity.js';
@@ -154,10 +154,10 @@ async function main() {
         }
         break;
       }
-      // R-12 響鈴群組統計 Ring Groups
-      case 'ringGroupStatistics': {
-        const records = await getRingGroupStatistics(periodFrom.toISOString(), periodTo.toISOString());
-        console.log(`Fetched ${records.length} Ring Group Statistics records`);
+      // R-12 響鈴群組統計 Ring Groups — 直接呼叫分機明細端點，ringGroupDns='' 代表全部響鈴群組
+      case 'extensionsStatisticsByRingGroups': {
+        const records = await getExtensionsStatisticsByRingGroups(periodFrom.toISOString(), periodTo.toISOString());
+        console.log(`Fetched ${records.length} Extensions Statistics by Ring Groups records`);
 
         const inserted = await insertRecords(records, { from: periodFrom.toISOString(), to: periodTo.toISOString() });
         if (inserted) {

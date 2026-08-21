@@ -209,12 +209,21 @@ export type AgentLoginHistoryRecord = {
   TalkingTotalInterval: string;
 };
 
-// R-12 響鈴群組統計 Ring Groups
-export type RingGroupStatisticsRecord = {
+// R-12 響鈴群組統計 Ring Groups — 2026-08-21 從 ReportRingGroupStatistics/Pbx.GetRingGroupStatisticsData
+// （響鈴群組層級彙總，不夠細）改成 ReportExtensionsStatisticsByRingGroups/Pbx.GetExtensionsStatisticsByRingGroupsData
+// （響鈴群組+分機明細）。ringGroupDns=''（空字串）已實測確認代表「所有響鈴群組」，一次呼叫拿到全部明細。
+// ExtensionAnsweredCount 實測 62 筆全部都有出現（包含值是 0 也明確顯示，不是省略），是必填；
+// RingGroupReceivedCount/RingGroupUnansweredCount/SentimentScore 測試窗口內完全沒出現過，保留 optional。
+export type ExtensionsStatisticsByRingGroupsRecord = {
   RingGroupDn: string;
   RingGroupDisplayName: string;
-  RingGroupReceivedCount: number;
-  RingGroupAnsweredCount: number;
+  ExtensionDn: string;
+  ExtensionDisplayName: string;
+  ExtensionAnsweredCount: number;
+  RingGroupReceivedCount?: number;
+  RingGroupUnansweredCount?: number;
+  SentimentScore?: number;
+  SortOrder: number;
 };
 
 // R-13 進線通話報表 Inbound Call Report（U6+）
