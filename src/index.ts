@@ -5,7 +5,7 @@ import { getStatisticSla } from './services/api/getStatisticSla.js';
 import { getCallLog } from './services/api/getCallLog.js';
 import { getInboundRules } from './services/api/getInboundRules.js';
 import { getAbandonedQueueCalls } from './services/api/getAbandonedQueueCalls.js';
-import { getQueuePerformanceTotals } from './services/api/getQueuePerformanceTotals.js';
+import { getQueuePerformanceOverview } from './services/api/getQueuePerformanceOverview.js';
 import { getDetailedQueueStatistics } from './services/api/getDetailedQueueStatistics.js';
 import { getTeamQueueGeneralStatistics } from './services/api/getTeamQueueGeneralStatistics.js';
 import { getAgentsInQueueStatistics } from './services/api/getAgentsInQueueStatistics.js';
@@ -99,10 +99,10 @@ async function main() {
         }
         break;
       }
-      // R-07 佇列績效總覽 Queue Performance Overview（實際 API 是 QueuePerformanceTotals）
-      case 'queuePerformanceTotals': {
-        const records = await getQueuePerformanceTotals(periodFrom.toISOString(), periodTo.toISOString());
-        console.log(`Fetched ${records.length} Queue Performance Totals records`);
+      // R-07 佇列績效總覽 Queue Performance Overview — 直接呼叫分機明細端點，queueDns='' 代表全部佇列
+      case 'queuePerformanceOverview': {
+        const records = await getQueuePerformanceOverview('', periodFrom.toISOString(), periodTo.toISOString());
+        console.log(`Fetched ${records.length} Queue Performance Overview records`);
 
         const inserted = await insertRecords(records, { from: periodFrom.toISOString(), to: periodTo.toISOString() });
         if (inserted) {

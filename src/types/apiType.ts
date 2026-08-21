@@ -132,15 +132,23 @@ export type StatisticSlaRecord = {
   BadSlaCallsCount: number;
 };
 
-// R-07 佇列績效總覽 Queue Performance Overview — 實際 API 是 ReportQueuePerformanceTotals/Pbx.GetQueuePerformanceTotalsData
-// QueueReceivedCount/ExtensionAnsweredCount/ExtensionDroppedCount 實測發現只有計數不為 0 才會出現在回應裡，
-// 計數是 0 的欄位整個 key 都不見（不是回傳 0 或 null），所以這裡都是 optional。
-export type QueuePerformanceTotalsRecord = {
+// R-07 佇列績效總覽 Queue Performance Overview — 實際端點是 ReportQueuePerformanceOverview/
+// Pbx.GetQueuePerformanceOverviewData，queueDns=''（空字串）已實測確認代表「所有佇列」，一次呼叫
+// 就拿到全部佇列的分機明細，不需要先呼叫 ReportQueuePerformanceTotals 抓佇列清單再逐一查詢。
+// QueueReceivedCount/ExtensionAnsweredCount/ExtensionDroppedCount/TalkTime/QueueAnsweredCount/
+// SortOrder 實測發現只有計數不為 0（或存在）才會出現在回應裡，計數是 0 的欄位整個 key 都不見
+// （不是回傳 0 或 null），所以這裡都是 optional。
+export type QueuePerformanceOverviewRecord = {
   QueueDn: string;
   QueueDisplayName: string;
+  ExtensionDn: string;
+  ExtensionDisplayName: string;
   QueueReceivedCount?: number;
   ExtensionAnsweredCount?: number;
   ExtensionDroppedCount?: number;
+  TalkTime?: string;
+  QueueAnsweredCount?: number;
+  SortOrder?: number;
 };
 
 // R-08 詳細佇列統計 Detailed Queue Statistics
